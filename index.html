@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ungdom</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1e1e2f;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 108px; /* Stor tittel */
+            color: #f8f32b;
+            text-shadow: 4px 4px 8px #000000;
+            margin: 20px 0 40px 0; /* Tittelen får plass */
+        }
+
+        .dashboard-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 60px auto; /* Senker hele dashbordet */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px; /* Mellomrom mellom elementene */
+        }
+
+        .card {
+            background-color: #292b44;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        #barChart, #pieChart {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ungdom</h1>
+    <div class="dashboard-container">
+        <!-- Kort for total ungdom -->
+        <div class="card">
+            <h2>Total Ungdom</h2>
+            <p>Registrerte Ungdom: 174</p>
+            <p>AAP Ungdom: 69</p>
+            <p>AAP U-24: 31</p>
+            <p>Registrerte med Mål: 69</p>
+        </div>
+        <!-- Søylegraf -->
+        <div class="card chart-container">
+            <h2>Fordeling av Ungdom</h2>
+            <canvas id="barChart"></canvas>
+        </div>
+        <!-- Kakediagram -->
+        <div class="card chart-container">
+            <h2>Prosentvis Fordeling</h2>
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Søylegraf
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Reg.', 'AAP Ungdom', 'AAP U-24', 'Mål'],
+                datasets: [{
+                    label: 'Antall',
+                    data: [174, 69, 31, 69],
+                    backgroundColor: [
+                        '#ff4c4c', '#4caf50', '#4caf50', '#4caf50'
+                    ],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'white'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Antall',
+                            color: 'white'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Kategorier',
+                            color: 'white'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Kakediagram
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Total Reg.', 'AAP Ungdom', 'AAP U-24', 'Mål'],
+                datasets: [{
+                    label: 'Fordeling',
+                    data: [174, 69, 31, 69],
+                    backgroundColor: ['#ff4c4c', '#4caf50', '#f8a32b', '#4caf50'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'white'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = 174 + 69 + 31 + 69;
+                                const value = context.raw;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.label}: ${percentage}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
